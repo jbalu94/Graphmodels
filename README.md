@@ -1,4 +1,4 @@
-# graphmodels
+# Graphmodels
 
 E mappa, a 2019 tavaszán írt szakdolgozatom keretében készített szimulációk és megjelenítők forráskódját tartalmazza.
 
