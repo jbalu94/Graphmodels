@@ -4,7 +4,7 @@ E mappa, a 2019 tavaszán írt szakdolgozatom keretében készített szimuláci�
 
 A szakdolgozat megtalálható itt: 
 
-Véletlen növekvő gráfmodelleket vizsgáltam, elméleti és gyakorlati szempontból egyaránt.
+A dolgozatban olyan véletlen növekvő gráfmodelleket vizsgáltam, melyben valamilyen téreblei struktúra jelen van, elméleti és gyakorlati szempontból egyaránt.
 
 ## Modellek
 Mind a 4 féle modellből lehetőségünk van generálni gráfokat és elmenteni a gráfok tulajdonságait. 
@@ -36,5 +36,18 @@ A main() függvényben a megfelelő paraméterek mellett a következő függvén
 simulateGPA3andSave(path,T,N,M,betas,alphas,deltas,gen);
 
 ### Spatial Preferential Attachment modell
+Használat:
+A main() függvényben a megfelelő paraméterek mellett a következő függvényt kell meghívjuk:
+simulateSPAandSave(path,T,N,P,A1,A2,gen);
 
 ### Hyperbolic Preferential Attachment modell
+Használat:
+A main() függvényben a megfelelő paraméterek mellett a következő függvényt kell meghívjuk:
+simulateHPAandSave(path,T,N,M,betas,deltas,gen);
+
+
+## Eredmények megjelenítése
+A processszakdogafiles.ipynb  fájl segítségével könnyedén megjeleníthetjük a generált eredményeket, néhány példa található, hogy hogyan.
+
+
+
