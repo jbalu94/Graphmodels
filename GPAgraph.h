@@ -68,18 +68,39 @@ double getI(double beta, int n);
 
 Graph generateGPA1(int n, int m, double delta, double r, int k, std::mt19937& gen);
 
-
+// to generate PA model we use the fact, that in the GPA model with F=F1, if r>sqrt(2)/2 then we get the simple PA model
+Graph generatePA(int n, int m, double delta,  std::mt19937& gen);
 
 
 // generating graph from the model when F = F2
 // this is on the sphere, with the angular metric
 Graph generateGPA2(int n, int m, double alpha, double delta, double beta, std::mt19937& gen);
 
-// simulate GPA graphs with the given parameters
+
+// generating graph from the model when F = F3
+// this is on the sphere, with the angular metric
+Graph generateGPA3(int n, int m, double alpha, double delta, double beta, std::mt19937& gen);
+
+
+
+// simulate PA graphs with the given parameters
+void simulatePAandSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> deltas, std::mt19937& gen);
+
+
+
+// simulate GPA graphs with the given parameters, F=F1
+void simulateGPA1andSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> R,
+ std::vector<double> deltas, std::mt19937& gen);
+
+
+// simulate GPA graphs with the given parameters, F=F2
 void simulateGPA2andSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> betas,
 	std::vector<double> alphas, std::vector<double> deltas, std::mt19937& gen);
 
 
+// simulate GPA graphs with the given parameters, F = F3
+void simulateGPA3andSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> betas,
+	std::vector<double> alphas, std::vector<double> deltas, std::mt19937& gen);
 
 
 

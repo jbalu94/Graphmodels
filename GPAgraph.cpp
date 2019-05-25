@@ -232,6 +232,12 @@ Graph generateGPA1(int n, int m, double delta, double r, int k, std::mt19937& ge
 
 
 
+// to generate PA model we use the fact, that in the GPA model with F=F1, if r>sqrt(2)/2 then we get the simple PA model
+Graph generatePA(int n, int m, double delta, std::mt19937& gen)
+{
+	return generateGPA1(n, m, delta, 1, 10, gen);
+}
+
 
 
 // generating graph from the model when F = F2
@@ -279,6 +285,172 @@ Graph generateGPA2(int n, int m, double alpha, double delta, double beta, std::m
 }
 
 
+// generating graph from the model when F = F3
+// this is on the sphere, with the angular metric
+Graph generateGPA3(int n, int m, double alpha, double delta, double beta, std::mt19937& gen)
+{
+	// first, generate the points
+	Graph G = Graph();
+	G.nodes.resize(n);
+	G.edges.resize(n);
+	for (int i = 0; i < n; ++i)
+	{
+		G.nodes[i].ind = i;
+		G.nodes[i].pos = generateRandomToSphere(0.5 / sqrt(PI));
+	}
+
+	// generate edges
+	for (int i = 1; i <= max(1, m / 2); ++i)
+	{
+		G.add_edge(G.nodes[0], G.nodes[0]);
+	}
+
+
+	for (int i = 1; i < n; ++i)
+	{
+		std::vector<double> weights(i + 1, 0);
+		double expected = getI(beta, n)*(2 * m + delta)*i;
+		double summa = 0;
+		for (int j = 0; j < i; ++j)
+		{
+			weights[j] = (G.edges[j].size() + delta)*getFvalue3(beta, getAng(G.nodes[j].pos, G.nodes[i].pos));
+			summa += weights[j];
+		}
+		if (summa == 0) weights[i] = 1;
+		else weights[i] = summa < alpha*expected / 2.0 ? (1 - summa / (alpha*expected / 2.0))*summa : 0;
+
+		for (int z = 0; z < m; ++z)
+		{
+			std::discrete_distribution<int> dist(std::begin(weights), std::end(weights));
+			int rand = dist(gen);
+			G.add_edge(G.nodes[i], G.nodes[rand]);
+		}
+	}
+	return G;
+}
+
+
+
+// simulate PA graphs with the given parameters
+void simulatePAandSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> deltas, std::mt19937& gen)
+{
+	int I = 0;
+	for (auto n : N)
+	{
+		for (auto m : M)
+		{
+			for (auto delta : deltas)
+			{
+				std::vector<std::vector<int> > degreeDists(T);
+				std::vector<double> avgClusts(T);
+				std::vector<double> globalClusts(T);
+				std::vector<std::vector<double> > CdClusts(T);
+				std::vector<double> assorts(T);
+				std::vector<double> spearmans(T);
+
+				for (int t = 0; t < T; ++t)
+				{
+					std::cout << std::endl << std::endl << ++I << ":   n=" << n << "  m=" << m << "   delta=" << delta << "   t=" << t;
+
+					Graph G = generatePA(n, m, delta, gen);
+					std::vector<int> degreeDist = getDegreeDist(G);
+					std::vector<double> cd = getCd(G);
+					double globalClust = getGlobalClustering(G);
+					double dn = double(n);
+					//std::cout << "Expected triangles: " << (m - 1)*m*(m + 1)*log(dn)*log(dn)*log(dn) / 48.0 << std::endl;
+					//std::cout << "Expected cherries: " << m * (m + 1)*n*log(n) / 2.0 << std::endl;
+					//std::cout << "Expected global clustering coefficient: " << (m - 1) / 8.0*log(dn)*log(dn) / dn << std::endl;
+					double avgClust = getAvgClustering(G);
+					double pearson = getPearsonCorr(G);
+					double spearman = getSpearmanCorr(G);
+
+					degreeDists[t] = degreeDist;
+					CdClusts[t] = cd;
+					avgClusts[t] = avgClust;
+					globalClusts[t] = globalClust;
+					assorts[t] = pearson;
+					spearmans[t] = spearman;
+				}
+
+				std::string n_str = tostr(n);
+				std::string m_str = tostr(m);
+				std::string delta_str = tostr(delta);
+
+				std::vector<std::string> params = { n_str,m_str,delta_str };
+				printResultsToFile(degreeDists, CdClusts, avgClusts, globalClusts, assorts, spearmans, path, "PA", params);
+			}
+		}
+			
+	}
+}
+
+
+
+// simulate GPA graphs with the given parameters, F=F1
+void simulateGPA1andSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> R,
+	 std::vector<double> deltas, std::mt19937& gen)
+{
+	int I = 0;
+	for (auto n : N)
+	{
+		for (auto m : M)
+		{
+			for (auto r : R)
+			{				
+				for (auto delta : deltas)
+				{
+					std::vector<std::vector<int> > degreeDists(T);
+					std::vector<double> avgClusts(T);
+					std::vector<double> globalClusts(T);
+					std::vector<std::vector<double> > CdClusts(T);
+					std::vector<double> assorts(T);
+					std::vector<double> spearmans(T);
+
+					for (int t = 0; t < T; ++t)
+					{
+						std::cout << std::endl << std::endl << ++I << ":   n=" << n << "  m=" << m << "   r="
+							<< r << "   delta=" << delta << "   t=" << t;
+
+						Graph G = generateGPA1(n, m, delta, r, 10, gen);
+						std::vector<int> degreeDist = getDegreeDist(G);
+						std::vector<double> cd = getCd(G);
+						double globalClust = getGlobalClustering(G);
+						double dn = double(n);
+							
+						double avgClust = getAvgClustering(G);
+						double pearson = getPearsonCorr(G);
+						double spearman = getSpearmanCorr(G);
+
+
+						degreeDists[t] = degreeDist;
+						CdClusts[t] = cd;
+						avgClusts[t] = avgClust;
+						globalClusts[t] = globalClust;
+						assorts[t] = pearson;
+						spearmans[t] = spearman;
+					}
+
+					std::string n_str = tostr(n);
+					std::string m_str = tostr(m);
+					std::string r_str = tostr(r);
+					std::string delta_str = tostr(delta);
+
+					std::vector<std::string>  params{ n_str,m_str,r_str,delta_str };
+					printResultsToFile(degreeDists, CdClusts, avgClusts, globalClusts, assorts, spearmans, path, "GPA1", params);
+				}
+				
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+// simulate GPA graphs with the given parameters, F=F2
 void simulateGPA2andSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> betas,
 	std::vector<double> alphas, std::vector<double> deltas, std::mt19937& gen)
 {
@@ -302,21 +474,21 @@ void simulateGPA2andSave(std::string path, int  T, std::vector<int> N, std::vect
 
 						for (int t = 0; t < T; ++t)
 						{
-							std::cout << ++I << ":   n=" << n << "  m=" << m << "   beta="
-								<< beta << "  alpha=" << alpha << "   delta=" << delta << "   t=" << t << std::endl;
+							std::cout <<std::endl<<std::endl<< ++I << ":   n=" << n << "  m=" << m << "   beta="
+								<< beta << "  alpha=" << alpha << "   delta=" << delta << "   t=" << t;
 
 							Graph G = generateGPA2(n, m, alpha, delta, beta, gen);
 							std::vector<int> degreeDist = getDegreeDist(G);
 							std::vector<double> cd = getCd(G);
 							double globalClust = getGlobalClustering(G);
 							double dn = double(n);
-							std::cout << "Expected triangles: " << (m - 1)*m*(m + 1)*log(dn)*log(dn)*log(dn) / 48.0 << std::endl;
-							std::cout << "Expected cherries: " << m * (m + 1)*n*log(n) / 2.0 << std::endl;
-							std::cout << "Expected global clustering coefficient: " << (m - 1) / 8.0*log(dn)*log(dn) / dn << std::endl;
+							//std::cout << "Expected triangles: " << (m - 1)*m*(m + 1)*log(dn)*log(dn)*log(dn) / 48.0 << std::endl;
+							//std::cout << "Expected cherries: " << m * (m + 1)*n*log(n) / 2.0 << std::endl;
+							//std::cout << "Expected global clustering coefficient: " << (m - 1) / 8.0*log(dn)*log(dn) / dn << std::endl;
 							double avgClust = getAvgClustering(G);
-
 							double pearson = getPearsonCorr(G);
 							double spearman = getSpearmanCorr(G);
+
 
 							degreeDists[t] = degreeDist;
 							CdClusts[t] = cd;
@@ -330,65 +502,10 @@ void simulateGPA2andSave(std::string path, int  T, std::vector<int> N, std::vect
 						std::string m_str = tostr(m);
 						std::string beta_str = tostr(beta);
 						std::string alpha_str = tostr(alpha);
-
 						std::string delta_str = tostr(delta);
 
-						std::string degreeDistFile = path + "/degreeDist_" + n_str + "_" + m_str + "_" + beta_str + "_" + alpha_str + "_" + delta_str + ".txt";
-						std::string avgClustFile = path + "/avgClust_" + n_str + "_" + m_str + "_" + beta_str + "_" + alpha_str + "_" + delta_str + ".txt";
-						std::string globalClustFile = path + "/globalClust_" + n_str + "_" + m_str + "_" + beta_str + "_" + alpha_str + "_" + delta_str + ".txt";
-						std::string CdClustFile = path + "/CdClust_" + n_str + "_" + m_str + "_" + beta_str + "_" + alpha_str + "_" + delta_str + ".txt";
-						std::string assortFile = path + "/assort_" + n_str + "_" + m_str + "_" + beta_str + "_" + alpha_str + "_" + delta_str + ".txt";
-						std::string spearmanFile = path + "/spearman_" + n_str + "_" + m_str + "_" + beta_str + "_" + alpha_str + "_" + delta_str + ".txt";
-
-						std::ofstream f1(degreeDistFile.c_str());
-						for (int i = 0; i < T; ++i)
-						{
-							for (int j = 0; j < n; ++j)
-							{
-								f1 << degreeDists[i][j] << " ";
-							}
-							f1 << std::endl;
-						}
-						f1.close();
-
-						std::ofstream f2(avgClustFile.c_str());
-						for (int i = 0; i < T; ++i)
-						{
-							f2 << avgClusts[i] << " ";
-						}
-						f2.close();
-
-						std::ofstream f3(globalClustFile.c_str());
-						for (int i = 0; i < T; ++i)
-						{
-							f3 << globalClusts[i] << " ";
-						}
-						f3.close();
-
-						std::ofstream f4(assortFile.c_str());
-						for (int i = 0; i < T; ++i)
-						{
-							f4 << assorts[i] << " ";
-						}
-						f4.close();
-
-						std::ofstream f5(CdClustFile.c_str());
-						for (int i = 0; i < T; ++i)
-						{
-							for (int j = 0; j < n; ++j)
-							{
-								f5 << CdClusts[i][j] << " ";
-							}
-							f5 << std::endl;
-						}
-						f5.close();
-
-						std::ofstream f6(spearmanFile.c_str());
-						for (int i = 0; i < T; ++i)
-						{
-							f6 << spearmans[i] << " ";
-						}
-						f6.close();
+						std::vector<std::string>  params{n_str,m_str,beta_str,alpha_str,delta_str};
+						printResultsToFile(degreeDists, CdClusts, avgClusts, globalClusts, assorts, spearmans, path, "GPA2",params);
 					}
 				}
 			}
@@ -396,3 +513,64 @@ void simulateGPA2andSave(std::string path, int  T, std::vector<int> N, std::vect
 	}
 }
 
+
+// simulate GPA graphs with the given parameters, F=F3
+void simulateGPA3andSave(std::string path, int  T, std::vector<int> N, std::vector<int> M, std::vector<double> betas,
+	std::vector<double> alphas, std::vector<double> deltas, std::mt19937& gen)
+{
+	int I = 0;
+	for (auto n : N)
+	{
+		for (auto m : M)
+		{
+			for (auto beta : betas)
+			{
+				for (auto alpha : alphas)
+				{
+					for (auto delta : deltas)
+					{
+						std::vector<std::vector<int> > degreeDists(T);
+						std::vector<double> avgClusts(T);
+						std::vector<double> globalClusts(T);
+						std::vector<std::vector<double> > CdClusts(T);
+						std::vector<double> assorts(T);
+						std::vector<double> spearmans(T);
+
+						for (int t = 0; t < T; ++t)
+						{
+							std::cout << std::endl << std::endl << ++I << ":   n=" << n << "  m=" << m << "   beta="
+								<< beta << "  alpha=" << alpha << "   delta=" << delta << "   t=" << t;
+
+							Graph G = generateGPA3(n, m, alpha, delta, beta, gen);
+							std::vector<int> degreeDist = getDegreeDist(G);
+							std::vector<double> cd = getCd(G);
+							double globalClust = getGlobalClustering(G);
+							double dn = double(n);
+							
+							double avgClust = getAvgClustering(G);
+							double pearson = getPearsonCorr(G);
+							double spearman = getSpearmanCorr(G);
+
+
+							degreeDists[t] = degreeDist;
+							CdClusts[t] = cd;
+							avgClusts[t] = avgClust;
+							globalClusts[t] = globalClust;
+							assorts[t] = pearson;
+							spearmans[t] = spearman;
+						}
+
+						std::string n_str = tostr(n);
+						std::string m_str = tostr(m);
+						std::string beta_str = tostr(beta);
+						std::string alpha_str = tostr(alpha);
+						std::string delta_str = tostr(delta);
+
+						std::vector<std::string>  params{ n_str,m_str,beta_str,alpha_str,delta_str };
+						printResultsToFile(degreeDists, CdClusts, avgClusts, globalClusts, assorts, spearmans, path, "GPA3", params);
+					}
+				}
+			}
+		}
+	}
+}

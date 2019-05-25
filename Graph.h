@@ -29,6 +29,7 @@ struct Graph
 	{
 		edges.push_back(std::vector<Node>());
 	}
+
 	void add_edge(Node u, Node v)
 	{
 		edges[u.ind].push_back(v);

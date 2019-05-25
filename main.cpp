@@ -6,6 +6,7 @@
 
 #include "Graph.h"
 #include "GPAgraph.h"
+#include "HPAgraph.h"
 #include "Helperfunctions.h"
 
 
@@ -20,19 +21,31 @@ int main()
 	std::mt19937 gen;
 	gen.seed(time(0));//if you want different results from different runs
 
-	string path = "E:/egyetem/msc szakdoga/szimulaciok/GPA2_proba";
+	// add the path to your folder where you want to store the results
+	string path = "E:/egyetem/msc szakdoga/szimulaciok";
 
 
 	int T = 10; // how many simulation do you want for each 
-	//parameters
-	vector<int> N{ 50 }; 
+
+	//set the parameters
+	vector<int> N{ 500 }; 
 	vector<int> M{ 5 };
-	vector<double> betas{ 0.5,1,1.5,2,3 };
+	vector<double> betas{ 0.5 };
 	vector<double> alphas{ 0 };
-	vector<double> deltas{ 0 };
+	vector<double> deltas{ 0.1,1,10 };
+	vector<double> R{ 0.1,0.2,0.3,0.4,0.5,0.6 };
 
-	simulateGPA2andSave(path, T, N, M, betas, alphas, deltas,gen);
 
+	// choose the model you wish to run
 
-	
+	//simulatePAandSave(path, T, N, M, deltas, gen);
+	//simulateGPA1andSave(path, T, N, M, R, deltas, gen);
+	//simulateGPA2andSave(path, T, N, M, betas, alphas, deltas,gen);
+	//simulateGPA3andSave(path, T, N, M, betas, alphas, deltas, gen);
+	//simulateSPAandSave(path, T, N, M, betas, alphas, deltas, gen);
+	simulateHPAandSave(path, T, N, M, betas, deltas, gen);
+	//Graph G = generateHPA(20, 3, 0.66, 1, gen);
+
+	return 0;
+
 }

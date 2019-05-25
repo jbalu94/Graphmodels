@@ -55,7 +55,17 @@ double getPearsonCorr(Graph& G);
 double getSpearmanCorr(Graph & G);
 
 std::string tostr(int a);
+
 std::string tostr(double a);
+
+
+// write the results to file
+void printResultsToFile(std::vector<std::vector<int> > degreeDists, std::vector<std::vector<double> > CdClusts, 
+	std::vector<double> avgClusts, std::vector<double> globalClusts, std::vector<double> assorts, 
+	std::vector<double> spearmans,std::string path, std::string modelname,std::vector<std::string> params);
+
+
+
 
 #endif
 

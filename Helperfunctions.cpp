@@ -6,8 +6,9 @@
 #include <set>
 #include <map>
 #include <cmath>
-#include "Graph.h"
+#include <fstream>
 
+#include "Graph.h"
 #include "Helperfunctions.h"
 
 
@@ -299,6 +300,8 @@ double getPearsonCorr(Graph& G)
 	return corr;
 }
 
+
+
 double getSpearmanCorr(Graph & G)
 {
 	std::vector<double> x;
@@ -334,4 +337,92 @@ std::string tostr(double a)
 	std::stringstream ss;
 	ss << a;
 	return ss.str();
+}
+
+
+// write the results to file
+void printResultsToFile(std::vector<std::vector<int> > degreeDists, std::vector<std::vector<double> > CdClusts,
+	std::vector<double> avgClusts, std::vector<double> globalClusts, std::vector<double> assorts,
+	std::vector<double> spearmans, std::string path, std::string modelname, std::vector<std::string> params)
+{
+	 
+	std::string degreeDistFile = path + "/" +modelname+"_degreeDist_";
+	std::string CdClustFile = path + "/" + modelname + "_CdClustFile_";
+	std::string avgClustFile = path + "/" + modelname + "_avgClustFile_";
+	std::string globalClustFile = path + "/" + modelname + "_globalClustFile_";
+	std::string assortFile = path + "/" + modelname + "_assortFile_";
+	std::string spearmanFile = path + "/" + modelname + "_spearmanFile_";
+
+	for (int i = 0; i < params.size(); ++i)
+	{
+		degreeDistFile += params[i] + "_";
+		CdClustFile += params[i] + "_";
+		avgClustFile += params[i] + "_";
+		globalClustFile += params[i] + "_";
+		assortFile += params[i] + "_";
+		spearmanFile += params[i] + "_";
+	}
+
+	degreeDistFile +=  ".txt";
+	CdClustFile +=  ".txt";
+	avgClustFile += ".txt";
+	globalClustFile += ".txt";
+	assortFile +=  ".txt";
+	spearmanFile += ".txt";
+
+	int T = degreeDists.size();
+	int n = degreeDists[0].size();
+
+	std::ofstream f1(degreeDistFile.c_str());
+	for (int i = 0; i < T; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			f1 << degreeDists[i][j] << " ";
+		}
+		f1 << std::endl;
+	}
+	f1.close();
+
+	std::ofstream f2(CdClustFile.c_str());
+	for (int i = 0; i < T; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			f2 << CdClusts[i][j] << " ";
+		}
+		f2 << std::endl;
+	}
+	f2.close();
+
+
+	std::ofstream f3(avgClustFile.c_str());
+	for (int i = 0; i < T; ++i)
+	{
+		f3 << avgClusts[i] << " ";
+	}
+	f3.close();
+
+	std::ofstream f4(globalClustFile.c_str());
+	for (int i = 0; i < T; ++i)
+	{
+		f4 << globalClusts[i] << " ";
+	}
+	f4.close();
+
+	std::ofstream f5(assortFile.c_str());
+	for (int i = 0; i < T; ++i)
+	{
+		f5 << assorts[i] << " ";
+	}
+	f5.close();
+
+
+	std::ofstream f6(spearmanFile.c_str());
+	for (int i = 0; i < T; ++i)
+	{
+		f6 << spearmans[i] << " ";
+	}
+	f6.close();
+
 }
