@@ -49,5 +49,5 @@ simulateHPAandSave(path,T,N,M,betas,deltas,gen);
 ## Eredmények megjelenítése
 A processszakdogafiles.ipynb  fájl segítségével könnyedén megjeleníthetjük a generált eredményeket, néhány példa található, hogy hogyan.
 
-
+$$\beta$$
 
