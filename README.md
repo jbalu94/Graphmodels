@@ -1,10 +1,13 @@
-# Graphmodels
+# Véletlen gráfmodellek
 
 E mappa, a 2019 tavaszán írt szakdolgozatom keretében készített szimulációk és megjelenítők forráskódját tartalmazza.
 
 A szakdolgozat megtalálható itt: 
 
 A dolgozatban olyan véletlen növekvő gráfmodelleket vizsgáltam, melyben valamilyen téreblei struktúra jelen van, elméleti és gyakorlati szempontból egyaránt.
+
+A forráskódok szabadon felhasználhatók saját felelősségre.
+
 
 ## Modellek
 Mind a 4 féle modellből lehetőségünk van generálni gráfokat és elmenteni a gráfok tulajdonságait. 
