@@ -16,7 +16,7 @@ double getHiperDist(std::vector<double> a, std::vector<double> b, double beta);
 
 
 // generate the ang of the new node
-double generateHPAang(Graph &G, int t, double beta, double delta, std::mt19937& gen);
+double generateHPAang(Graph &G, int t, double beta, double delta, std::mt19937& gen, int maxi);
 
 
 // generate a HPA graph 

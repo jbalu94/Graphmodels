@@ -339,6 +339,26 @@ std::string tostr(double a)
 	return ss.str();
 }
 
+// write a graph to a file
+void writeToFile(Graph &G, std::string file)
+{
+	std::ofstream f(file.c_str());
+	for (int i = 0; i < G.nodes.size(); ++i)
+	{
+		f << G.nodes[i].pos[0] << " " << G.nodes[i].pos[1] << std::endl;
+	}
+	for (int i = 0; i < G.edges.size(); ++i)
+	{
+		for (int j = 0; j < G.edges[i].size(); ++j)
+		{
+			f << G.edges[i][j].ind << " ";
+		}
+		f << std::endl;
+	}
+	f.close();
+}
+
+
 
 // write the results to file
 void printResultsToFile(std::vector<std::vector<int> > degreeDists, std::vector<std::vector<double> > CdClusts,

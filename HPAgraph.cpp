@@ -17,10 +17,10 @@
 // calculate the hiperbolic distance between two points
 double getHiperDist(std::vector<double> a, std::vector<double> b, double beta)
 {
-	double s = a[0];
-	double t = b[0];
-	double s_ang = a[1];
-	double t_ang = b[1];
+	double t = a[0];
+	double s = b[0];
+	double t_ang = a[1];
+	double s_ang = b[1];
 
 	double ang_dist = min(fabs(s_ang - t_ang), min(fabs(s_ang - 2 * PI - t_ang), fabs(s_ang + 2 * PI - t_ang)));
 
@@ -33,23 +33,25 @@ double getHiperDist(std::vector<double> a, std::vector<double> b, double beta)
 
 
 // generate the ang of the new node
-double generateHPAang(Graph &G, int t, double beta, double delta, std::mt19937& gen)
+double generateHPAang(Graph &G, int t, double beta, double delta, std::mt19937& gen,int maxi = 100)
 {
-	std::vector<double> randAngs(t);
+	std::vector<double> randAngs(min(t,maxi));
 
 	double r_t = 2 * log(t);
 
-	for (int i = 0; i < t; ++i)
+	for (int i = 0; i < min(t,maxi); ++i)
 	{
 		randAngs[i] = fRand(0, 2 * PI);
 	}
 
-	std::vector<double> closePointNum(t, delta);
-	for (int i = 0; i < t; ++i)
+	std::vector<double> closePointNum(min(t,maxi), delta);
+	for (int i = 0; i < min(t,maxi); ++i)
 	{
+
+		//double r_t = 2 * log(t + 1);
 		for (int j = 0; j < t - 1; ++j)
 		{
-			if (getHiperDist(std::vector<double>{r_t, randAngs[i]}, G.nodes[j].pos, beta) < r_t)
+			if (getHiperDist(std::vector<double>{double(t+1), randAngs[i]}, G.nodes[j].pos, beta) < r_t)
 			{
 				closePointNum[i] += 1;
 			}
@@ -112,7 +114,6 @@ void simulateHPAandSave(std::string path, int T, std::vector<int> N, std::vector
 		{
 			for (auto beta : betas)
 			{
-				
 				for (auto delta : deltas)
 				{
 					std::vector<std::vector<int> > degreeDists(T);

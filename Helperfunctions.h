@@ -58,6 +58,9 @@ std::string tostr(int a);
 
 std::string tostr(double a);
 
+// write a graph to a file
+void writeToFile(Graph &G, std::string file);
+
 
 // write the results to file
 void printResultsToFile(std::vector<std::vector<int> > degreeDists, std::vector<std::vector<double> > CdClusts, 
