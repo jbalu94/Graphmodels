@@ -2,7 +2,7 @@
 
 E mappa, a 2019 tavaszán írt szakdolgozatom keretében készített szimulációk és megjelenítők forráskódját tartalmazza.
 
-A szakdolgozat megtalálható itt: 
+A szakdolgozat megtalálható itt: http://web.cs.elte.hu/blobs/diplomamunkak/msc_alkmat/2019/juhasz_balazs.pdf
 
 A dolgozatban olyan véletlen növekvő gráfmodelleket vizsgáltam, melyben valamilyen téreblei struktúra jelen van, elméleti és gyakorlati szempontból egyaránt.
 
