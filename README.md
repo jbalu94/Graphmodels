@@ -4,7 +4,7 @@ E mappa, a 2019 tavaszán írt szakdolgozatom keretében készített szimuláci�
 
 A szakdolgozat megtalálható itt: http://web.cs.elte.hu/blobs/diplomamunkak/msc_alkmat/2019/juhasz_balazs.pdf
 
-A dolgozatban olyan véletlen növekvő gráfmodelleket vizsgáltam, melyben valamilyen téreblei struktúra jelen van, elméleti és gyakorlati szempontból egyaránt.
+A dolgozatban olyan véletlen növekvő gráfmodelleket vizsgáltam elméleti és gyakorlati szempontból egyaránt, melyben valamilyen térbelei struktúra is jelen van,.
 
 A forráskódok szabadon felhasználhatók saját felelősségre.
 
@@ -39,7 +39,7 @@ A main() függvényben a megfelelő paraméterek mellett a következő függvén
 simulateGPA3andSave(path,T,N,M,betas,alphas,deltas,gen);
 
 ### Spatial Preferential Attachment modell
-Használat:
+Használat: (még nincs implementálva C++ban, a modellhez tartozó ábrák pythonban lettek implementálva)
 A main() függvényben a megfelelő paraméterek mellett a következő függvényt kell meghívjuk:
 simulateSPAandSave(path,T,N,P,A1,A2,gen);
 
@@ -52,4 +52,5 @@ simulateHPAandSave(path,T,N,M,betas,deltas,gen);
 ## Eredmények megjelenítése
 A processszakdogafiles.ipynb  fájl segítségével könnyedén megjeleníthetjük a generált eredményeket, néhány példa található, hogy hogyan.
 
+Bármilyen kérdést, megjegyzést szívesen fogadok a juhaszb23@gmail.com email címen.
 
